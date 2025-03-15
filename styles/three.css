@@ -1,0 +1,14 @@
+.three-section {
+    width: 50%;
+    height: 100%;
+    background-color: #1a1a1a;
+}
+
+canvas {
+    display: block;
+}
+
+/* TODO: Add loading indicator for 3D models */
+/* TODO: Add controls overlay for mobile devices */
+/* TODO: Add scene information display */
+/* TODO: Add object selection highlighting */
