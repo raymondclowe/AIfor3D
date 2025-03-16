@@ -57,8 +57,8 @@ class SceneManager {
         // Create object manager
         this.objectManager = new SceneObjectManager(this.scene);
         
-        // Create initial object
-        this.currentObject = this.objectManager.createObject();
+        // Create initial object(s)
+        this.objectManager.createObject();
         
         // Handle window resize
         window.addEventListener('resize', () => this.handleResize());
@@ -100,10 +100,24 @@ class SceneManager {
     animate() {
         requestAnimationFrame(() => this.animate());
         
-        // Slowly rotate the cube if it exists
-        if (this.currentObject) {
-            this.currentObject.rotation.x += 0.003;
-            this.currentObject.rotation.y += 0.003;
+        // Get current object(s) from object manager
+        const currentObject = this.objectManager.currentObject;
+        
+        // Slowly rotate objects if they exist
+        if (currentObject) {
+            if (Array.isArray(currentObject)) {
+                // Handle array of objects
+                currentObject.forEach(obj => {
+                    if (obj && obj.rotation) {
+                        obj.rotation.x += 0.003;
+                        obj.rotation.y += 0.003;
+                    }
+                });
+            } else if (currentObject.rotation) {
+                // Handle single object
+                currentObject.rotation.x += 0.003;
+                currentObject.rotation.y += 0.003;
+            }
         }
         
         this.controls.update();

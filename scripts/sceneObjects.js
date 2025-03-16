@@ -10,12 +10,13 @@ class SceneObjectManager {
         this.scene = scene;
         this.currentObject = null;
         
-        // default shape - 1x2x3 block
+        // Default code with multiple objects
         this.objectCode = `
 // Create a 1x2x3 block
-const geometry = new THREE.BoxGeometry(1, 2, 3);
-const material = new THREE.MeshNormalMaterial();
-const block = new THREE.Mesh(geometry, material);
+const blockGeometry = new THREE.BoxGeometry(1, 2, 3);
+const blockMaterial = new THREE.MeshNormalMaterial();
+const block = new THREE.Mesh(blockGeometry, blockMaterial);
+block.position.x = 2;
 
 // Animation properties
 block.rotation.x = 0;
@@ -25,7 +26,17 @@ block.rotation.z = 0;
 // Add the block to the scene
 scene.add(block);
 
-return block;
+// Create a sphere
+const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
+const sphereMaterial = new THREE.MeshNormalMaterial();
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.position.x = -2;
+
+// Add the sphere to the scene
+scene.add(sphere);
+
+// Return array of objects (optional)
+return [block, sphere];
 `;
 
 
@@ -64,13 +75,21 @@ return block;
     }
     
     /**
-     * Create object from object code
-     * @returns {Object} The created 3D object
+     * Create objects from object code
+     * @returns {Object|Array} The created 3D object(s)
      */
     createObject() {
-        // Remove current object if it exists
+        // Clear existing objects
         if (this.currentObject) {
-            this.scene.remove(this.currentObject);
+            if (Array.isArray(this.currentObject)) {
+                this.currentObject.forEach(obj => {
+                    if (obj && obj.parent === this.scene) {
+                        this.scene.remove(obj);
+                    }
+                });
+            } else if (this.currentObject.parent === this.scene) {
+                this.scene.remove(this.currentObject);
+            }
         }
         
         try {
@@ -81,9 +100,8 @@ return block;
             // Execute the function with THREE and scene as parameters
             this.currentObject = createObjectFunction(THREE, this.scene);
             
-            if (!this.currentObject) {
-                throw new Error('Object code did not return an object');
-            }
+            // Note: We don't throw an error if no object is returned
+            // because objects might be added directly to the scene
             
             return this.currentObject;
         } catch (error) {
@@ -109,44 +127,93 @@ return block;
     /**
      * Update object properties
      * @param {Object} properties - Object properties to update
+     * @param {number} [index] - Index of object to update (if currentObject is an array)
      */
-    updateObject(properties) {
+    updateObject(properties, index) {
         if (!this.currentObject) return;
         
-        // Apply properties to the current object
-        Object.keys(properties).forEach(key => {
-            if (typeof properties[key] === 'object' && this.currentObject[key]) {
-                Object.assign(this.currentObject[key], properties[key]);
-            } else {
-                this.currentObject[key] = properties[key];
+        if (Array.isArray(this.currentObject)) {
+            // If index is provided, update only that object
+            if (index !== undefined && this.currentObject[index]) {
+                const targetObject = this.currentObject[index];
+                Object.keys(properties).forEach(key => {
+                    if (typeof properties[key] === 'object' && targetObject[key]) {
+                        Object.assign(targetObject[key], properties[key]);
+                    } else {
+                        targetObject[key] = properties[key];
+                    }
+                });
+            } 
+            // Otherwise update all objects with the same properties
+            else {
+                this.currentObject.forEach(obj => {
+                    if (obj) {
+                        Object.keys(properties).forEach(key => {
+                            if (typeof properties[key] === 'object' && obj[key]) {
+                                Object.assign(obj[key], properties[key]);
+                            } else {
+                                obj[key] = properties[key];
+                            }
+                        });
+                    }
+                });
             }
-        });
+        } 
+        // Single object case
+        else {
+            Object.keys(properties).forEach(key => {
+                if (typeof properties[key] === 'object' && this.currentObject[key]) {
+                    Object.assign(this.currentObject[key], properties[key]);
+                } else {
+                    this.currentObject[key] = properties[key];
+                }
+            });
+        }
     }
     
     /**
      * Get current object state
-     * @returns {Object} Object state
+     * @param {number} [index] - Index of object to get state for (if currentObject is an array)
+     * @returns {Object|Array} Object state or array of object states
      */
-    getObjectState() {
+    getObjectState(index) {
         if (!this.currentObject) return null;
         
-        return {
-            position: {
-                x: this.currentObject.position.x,
-                y: this.currentObject.position.y,
-                z: this.currentObject.position.z
-            },
-            rotation: {
-                x: this.currentObject.rotation.x,
-                y: this.currentObject.rotation.y,
-                z: this.currentObject.rotation.z
-            },
-            scale: {
-                x: this.currentObject.scale.x,
-                y: this.currentObject.scale.y,
-                z: this.currentObject.scale.z
-            }
+        // Helper function to get state for a single object
+        const getStateForObject = (obj) => {
+            return {
+                position: {
+                    x: obj.position.x,
+                    y: obj.position.y,
+                    z: obj.position.z
+                },
+                rotation: {
+                    x: obj.rotation.x,
+                    y: obj.rotation.y,
+                    z: obj.rotation.z
+                },
+                scale: {
+                    x: obj.scale.x,
+                    y: obj.scale.y,
+                    z: obj.scale.z
+                }
+            };
         };
+        
+        if (Array.isArray(this.currentObject)) {
+            // If index is provided, return state for that object
+            if (index !== undefined && this.currentObject[index]) {
+                return getStateForObject(this.currentObject[index]);
+            }
+            // Otherwise return array of states
+            else {
+                return this.currentObject.map(obj => obj ? getStateForObject(obj) : null);
+            }
+        }
+        // Single object case
+        else {
+            return getStateForObject(this.currentObject);
+        }
     }
     
 }

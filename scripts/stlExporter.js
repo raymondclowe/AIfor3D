@@ -23,17 +23,13 @@ export function exportSTL(objectCode) {
         const createObjectFunction = new Function('THREE', 'scene', objectCode);
         
         // Execute the function with THREE and tempScene as parameters
-        const object = createObjectFunction(THREE, tempScene);
-        
-        if (!object) {
-            throw new Error('Object code did not return an object');
-        }
+        createObjectFunction(THREE, tempScene);
         
         // Create STL exporter
         const exporter = new THREE.STLExporter();
         
-        // Generate STL string (ASCII format)
-        const stlData = exporter.parse(object, { binary: false });
+        // Generate STL string (ASCII format) from the entire scene
+        const stlData = exporter.parse(tempScene, { binary: false });
         
         // Create blob from STL data
         const blob = new Blob([stlData], { type: 'application/octet-stream' });
