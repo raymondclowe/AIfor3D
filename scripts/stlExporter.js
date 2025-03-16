@@ -32,8 +32,8 @@ export function exportSTL(objectCode) {
         // Create STL exporter
         const exporter = new THREE.STLExporter();
         
-        // Generate STL string (binary format)
-        const stlData = exporter.parse(object, { binary: true });
+        // Generate STL string (ASCII format)
+        const stlData = exporter.parse(object, { binary: false });
         
         // Create blob from STL data
         const blob = new Blob([stlData], { type: 'application/octet-stream' });

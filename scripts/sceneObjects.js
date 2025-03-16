@@ -10,21 +10,40 @@ class SceneObjectManager {
         this.scene = scene;
         this.currentObject = null;
         
-        // Default cube code
+        // default shape - 1x2x3 block
         this.objectCode = `
-// Create a cube
-const geometry = new THREE.BoxGeometry(1, 1, 1);
+// Create a 1x2x3 block
+const geometry = new THREE.BoxGeometry(1, 2, 3);
 const material = new THREE.MeshNormalMaterial();
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+const block = new THREE.Mesh(geometry, material);
 
 // Animation properties
-cube.rotation.x = 0;
-cube.rotation.y = 0;
-cube.rotation.z = 0;
+block.rotation.x = 0;
+block.rotation.y = 0;
+block.rotation.z = 0;
 
-return cube;
+// Add the block to the scene
+scene.add(block);
+
+return block;
 `;
+
+
+//         // Default cube code
+//         this.objectCode = `
+// // Create a cube
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const material = new THREE.MeshNormalMaterial();
+// const cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
+
+// // Animation properties
+// cube.rotation.x = 0;
+// cube.rotation.y = 0;
+// cube.rotation.z = 0;
+
+// return cube;
+// `;
     }
     
     /**
@@ -69,9 +88,17 @@ return cube;
             return this.currentObject;
         } catch (error) {
             console.error('Error creating object from code:', error);
-            // Fallback to default cube if code execution fails
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshNormalMaterial();
+            // Fallback to triangle if code execution fails
+            const geometry = new THREE.BufferGeometry();
+            // Define three vertices for the triangle
+            const vertices = new Float32Array([
+                0, 1, 0,    // top vertex
+                -1, -1, 0,  // bottom left vertex
+                1, -1, 0    // bottom right vertex
+            ]);
+            // Add vertices to the geometry
+            geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            const material = new THREE.MeshNormalMaterial({ side: THREE.DoubleSide });
             this.currentObject = new THREE.Mesh(geometry, material);
             this.scene.add(this.currentObject);
             
