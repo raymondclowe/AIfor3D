@@ -6,8 +6,9 @@
 /**
  * Export object code as STL file
  * @param {string} objectCode - Three.js code as a string
+ * @param {THREE.Group} [sceneGroup] - Optional scene group to export directly
  */
-export function exportSTL(objectCode) {
+export function exportSTL(objectCode, sceneGroup) {
     // Check if STLExporter is available
     if (!THREE.STLExporter) {
         console.error('STLExporter not found. Make sure it is loaded.');
@@ -16,20 +17,27 @@ export function exportSTL(objectCode) {
     }
 
     try {
-        // Create a temporary scene
-        const tempScene = new THREE.Scene();
-        
-        // Create a function from the object code string
-        const createObjectFunction = new Function('THREE', 'scene', objectCode);
-        
-        // Execute the function with THREE and tempScene as parameters
-        createObjectFunction(THREE, tempScene);
-        
         // Create STL exporter
         const exporter = new THREE.STLExporter();
+        let stlData;
         
-        // Generate STL string (ASCII format) from the entire scene
-        const stlData = exporter.parse(tempScene, { binary: false });
+        // If sceneGroup is provided, use it directly
+        if (sceneGroup) {
+            // Generate STL string (ASCII format) from the scene group
+            stlData = exporter.parse(sceneGroup, { binary: false });
+        } else {
+            // Create a temporary scene
+            const tempScene = new THREE.Scene();
+            
+            // Create a function from the object code string
+            const createObjectFunction = new Function('THREE', 'scene', objectCode);
+            
+            // Execute the function with THREE and tempScene as parameters
+            createObjectFunction(THREE, tempScene);
+            
+            // Generate STL string (ASCII format) from the entire scene
+            stlData = exporter.parse(tempScene, { binary: false });
+        }
         
         // Create blob from STL data
         const blob = new Blob([stlData], { type: 'application/octet-stream' });
@@ -62,10 +70,12 @@ export function initSTLExport() {
     }
     
     exportButton.addEventListener('click', () => {
-        // Get object code from object manager
+        // Get object code and scene group from object manager
         if (window.app && window.app.objectManager) {
             const objectCode = window.app.objectManager.getObjectCode();
-            exportSTL(objectCode);
+            // Get the scene group from the scene manager
+            const sceneGroup = window.app.sceneManager ? window.app.sceneManager.getSceneGroup() : null;
+            exportSTL(objectCode, sceneGroup);
         } else {
             console.error('Object manager not found');
             alert('Object manager not found');

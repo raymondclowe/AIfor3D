@@ -130,6 +130,14 @@ class SceneManager {
     getObjectManager() {
         return this.objectManager;
     }
+    
+    /**
+     * Get the scene group
+     * @returns {THREE.Group} The scene group containing all objects
+     */
+    getSceneGroup() {
+        return this.sceneGroup;
+    }
 }
 
 // Export the SceneManager class
