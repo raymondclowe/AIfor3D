@@ -1,11 +1,15 @@
 /**
  * Chat functionality module
- * Handles message display, user input, and simulated responses
  * 
- * TODO: Implement real chat backend integration
- * TODO: Add message history persistence
- * TODO: Add user authentication
- * TODO: Add support for rich content (images, links, etc.)
+ * Handles:
+ * - Message display and formatting
+ * - User input processing
+ * - Simulated responses
+ * 
+ * TODO: HIGH [Cline] [2025-03-16] Implement real chat backend integration
+ * TODO: MEDIUM [Cline] [2025-03-16] Add message history persistence
+ * TODO: MEDIUM [Cline] [2025-03-16] Add user authentication
+ * TODO: LOW [Cline] [2025-03-16] Add support for rich content (images, links, etc.)
  */
 
 // Dummy conversation for demonstration
@@ -17,7 +21,9 @@ const dummyConversation = [
     { sender: 'bot', text: "Left-click and drag to rotate, right-click and drag to pan, and use the scroll wheel to zoom in and out." }
 ];
 
+/** Chat manager handling all chat functionality */
 class ChatManager {
+    /** Initialize chat manager and setup event listeners */
     constructor() {
         this.chatHistory = document.getElementById('chat-history');
         this.userInput = document.getElementById('user-input');
@@ -26,7 +32,7 @@ class ChatManager {
         this.setupEventListeners();
     }
     
-    // Initialize chat with dummy conversation
+    /** Load initial dummy conversation with example messages */
     loadDummyConversation() {
         dummyConversation.forEach(message => {
             this.addMessage(message.text, message.sender);
@@ -34,7 +40,11 @@ class ChatManager {
         this.scrollToBottom();
     }
     
-    // Add a new message to the chat
+    /**
+     * Add new message to chat history
+     * @param {string} text - Message content
+     * @param {string} sender - 'user' or 'bot'
+     */
     addMessage(text, sender) {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${sender}-message`;
@@ -43,12 +53,12 @@ class ChatManager {
         this.scrollToBottom();
     }
     
-    // Scroll chat to the bottom
+    /** Scroll chat window to show latest message */
     scrollToBottom() {
         this.chatHistory.scrollTop = this.chatHistory.scrollHeight;
     }
     
-    // Set up event listeners for user input
+    /** Setup event listeners for send button and enter key */
     setupEventListeners() {
         // Handle send button click
         this.sendButton.addEventListener('click', () => {
@@ -63,7 +73,7 @@ class ChatManager {
         });
     }
     
-    // Process user input
+    /** Process user input and generate response */
     handleUserInput() {
         const text = this.userInput.value.trim();
         if (text !== '') {

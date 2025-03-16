@@ -1,0 +1,11 @@
+Always keep existing comments.
+
+Ensure comments explain both WHAT is being done and WHY it is done.
+
+Every file should start with clear comments explaining the high level purpose of the file and listing any functions or subsections included. 
+
+Every file should have comments explaining where the file is in the higherachy. e.g. what uses or calls this file, and what files this file uses or calls.
+
+Keep README.md in sync with major changes to the code.
+
+Maintain a CHANGELOG.md.
