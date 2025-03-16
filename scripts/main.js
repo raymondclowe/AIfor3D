@@ -33,6 +33,19 @@ class Application {
         // Load dummy conversation
         this.chatManager.loadDummyConversation();
         
+        // Add event listener for toggle rotation button
+        const toggleRotationBtn = document.getElementById('btn-toggle-rotation');
+        if (toggleRotationBtn) {
+            let rotationEnabled = true; // Start with rotation enabled
+            toggleRotationBtn.addEventListener('click', () => {
+                rotationEnabled = !rotationEnabled;
+                this.sceneManager.toggleSceneRotation(rotationEnabled);
+                toggleRotationBtn.textContent = rotationEnabled ? 'Disable Rotation' : 'Enable Rotation';
+            });
+            // Set initial button text
+            toggleRotationBtn.textContent = 'Disable Rotation';
+        }
+        
         // TODO: Add command processing integration between chat and 3D scene
         // TODO: Add event listeners for object manipulation commands
         

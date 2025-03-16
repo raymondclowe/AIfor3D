@@ -18,12 +18,7 @@ const blockMaterial = new THREE.MeshNormalMaterial();
 const block = new THREE.Mesh(blockGeometry, blockMaterial);
 block.position.x = 2;
 
-// Animation properties
-block.rotation.x = 0;
-block.rotation.y = 0;
-block.rotation.z = 0;
-
-// Add the block to the scene
+// Add the block to the scene group
 scene.add(block);
 
 // Create a sphere
@@ -32,7 +27,7 @@ const sphereMaterial = new THREE.MeshNormalMaterial();
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.x = -2;
 
-// Add the sphere to the scene
+// Add the sphere to the scene group
 scene.add(sphere);
 
 // Return array of objects (optional)

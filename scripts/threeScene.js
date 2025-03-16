@@ -21,6 +21,8 @@ class SceneManager {
         this.renderer = null;
         this.controls = null;
         this.objectManager = null;
+        this.sceneGroup = null;
+        this.rotateScene = true;
         
         this.init();
     }
@@ -42,9 +44,13 @@ class SceneManager {
         this.renderer.setSize(this.width, this.height);
         this.container.appendChild(this.renderer.domElement);
         
+        // Create a group for all objects (for scene rotation)
+        this.sceneGroup = new THREE.Group();
+        this.scene.add(this.sceneGroup);
+        
         // Add grid
         const gridHelper = new THREE.GridHelper(10, 10, 0x555555, 0x333333);
-        this.scene.add(gridHelper);
+        this.sceneGroup.add(gridHelper);
         
         // Add lights
         this.addLights();
@@ -55,7 +61,7 @@ class SceneManager {
         this.controls.dampingFactor = 0.25;
         
         // Create object manager
-        this.objectManager = new SceneObjectManager(this.scene);
+        this.objectManager = new SceneObjectManager(this.sceneGroup);
         
         // Create initial object(s)
         this.objectManager.createObject();
@@ -100,28 +106,21 @@ class SceneManager {
     animate() {
         requestAnimationFrame(() => this.animate());
         
-        // Get current object(s) from object manager
-        const currentObject = this.objectManager.currentObject;
-        
-        // Slowly rotate objects if they exist
-        if (currentObject) {
-            if (Array.isArray(currentObject)) {
-                // Handle array of objects
-                currentObject.forEach(obj => {
-                    if (obj && obj.rotation) {
-                        obj.rotation.x += 0.003;
-                        obj.rotation.y += 0.003;
-                    }
-                });
-            } else if (currentObject.rotation) {
-                // Handle single object
-                currentObject.rotation.x += 0.003;
-                currentObject.rotation.y += 0.003;
-            }
+        // Rotate the entire scene group instead of individual objects
+        if (this.rotateScene && this.sceneGroup) {
+            this.sceneGroup.rotation.y += 0.003;
         }
         
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
+    }
+    
+    /**
+     * Toggle scene rotation
+     * @param {boolean} enable - Whether to enable scene rotation
+     */
+    toggleSceneRotation(enable) {
+        this.rotateScene = enable;
     }
     
     /**
