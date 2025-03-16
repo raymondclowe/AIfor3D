@@ -1,10 +1,7 @@
 /**
  * Scene Objects Manager
- * Handles 3D object creation and manipulation using template strings
+ * Handles 3D object creation and manipulation using code strings
  * 
- * TODO: Add support for multiple objects
- * TODO: Add object selection
- * TODO: Add material library
  * TODO: Add physics integration
  */
 
@@ -13,8 +10,8 @@ class SceneObjectManager {
         this.scene = scene;
         this.currentObject = null;
         
-        // Default cube template
-        this.objectTemplate = `
+        // Default cube code
+        this.objectCode = `
 // Create a cube
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshNormalMaterial();
@@ -28,47 +25,27 @@ cube.rotation.z = 0;
 
 return cube;
 `;
-
-        // Example templates
-        this.templates = {
-            cube: this.objectTemplate,
-            sphere: `
-// Create a sphere
-const geometry = new THREE.SphereGeometry(1, 32, 32);
-const material = new THREE.MeshNormalMaterial();
-const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);
-
-// Animation properties
-sphere.rotation.x = 0;
-sphere.rotation.y = 0;
-sphere.rotation.z = 0;
-
-return sphere;
-`
-        };
     }
     
     /**
-     * Set the template for object creation
-     * @param {string} template - Three.js code as a string
+     * Set the object code for object creation
+     * @param {string} code - Three.js code as a string
      */
-    setTemplate(template) {
-        this.objectTemplate = template;
-        // TODO: Add template validation
-        // TODO: Add syntax highlighting for template editing
+    setObjectCode(code) {
+        this.objectCode = code;
+        // TODO: Add syntax validation
     }
     
     /**
-     * Get the current object template
-     * @returns {string} The current template
+     * Get the current object code
+     * @returns {string} The current object code
      */
-    getTemplate() {
-        return this.objectTemplate;
+    getObjectCode() {
+        return this.objectCode;
     }
     
     /**
-     * Create object from template
+     * Create object from object code
      * @returns {Object} The created 3D object
      */
     createObject() {
@@ -78,21 +55,21 @@ return sphere;
         }
         
         try {
-            // Create a function from the template string
+            // Create a function from the object code string
             // This is a simplified version - in production, this would need more security
-            const createObjectFunction = new Function('THREE', 'scene', this.objectTemplate);
+            const createObjectFunction = new Function('THREE', 'scene', this.objectCode);
             
             // Execute the function with THREE and scene as parameters
             this.currentObject = createObjectFunction(THREE, this.scene);
             
             if (!this.currentObject) {
-                throw new Error('Template did not return an object');
+                throw new Error('Object code did not return an object');
             }
             
             return this.currentObject;
         } catch (error) {
-            console.error('Error creating object from template:', error);
-            // Fallback to default cube if template execution fails
+            console.error('Error creating object from code:', error);
+            // Fallback to default cube if code execution fails
             const geometry = new THREE.BoxGeometry(1, 1, 1);
             const material = new THREE.MeshNormalMaterial();
             this.currentObject = new THREE.Mesh(geometry, material);
@@ -145,14 +122,6 @@ return sphere;
         };
     }
     
-    /**
-     * Get a template by name
-     * @param {string} name - Template name
-     * @returns {string} The template
-     */
-    getTemplateByName(name) {
-        return this.templates[name] || this.objectTemplate;
-    }
 }
 
 // Export the SceneObjectManager class

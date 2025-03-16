@@ -1,11 +1,10 @@
 /**
  * Editor Panel Manager
- * Handles code editing, preview, and template management
+ * Handles code editing, preview, and object code management
  * 
  * TODO: Add syntax validation
  * TODO: Add error highlighting
  * TODO: Add undo/redo history
- * TODO: Add template presets
  */
 
 class EditorPanel {
@@ -23,9 +22,9 @@ class EditorPanel {
         this.isExpanded = false;
         this.isPreviewMode = false;
         
-        // Template versions
-        this.mainTemplate = null;
-        this.editorTemplate = null;
+        // Object code versions
+        this.mainObjectCode = null;
+        this.editorObjectCode = null;
         
         // Reference to SceneObjectManager (will be set later)
         this.objectManager = null;
@@ -64,10 +63,10 @@ class EditorPanel {
         this.editorToggle.addEventListener('click', () => this.togglePanel());
         
         // Preview button
-        this.previewButton.addEventListener('click', () => this.previewTemplate());
+        this.previewButton.addEventListener('click', () => this.previewObjectCode());
         
         // Save button
-        this.saveButton.addEventListener('click', () => this.saveTemplate());
+        this.saveButton.addEventListener('click', () => this.saveObject());
         
         // Cancel button
         this.cancelButton.addEventListener('click', () => this.cancelChanges());
@@ -80,12 +79,12 @@ class EditorPanel {
     setObjectManager(objectManager) {
         this.objectManager = objectManager;
         
-        // Initialize templates
-        this.mainTemplate = this.objectManager.getTemplate();
-        this.editorTemplate = this.mainTemplate;
+        // Initialize object code
+        this.mainObjectCode = this.objectManager.getObjectCode();
+        this.editorObjectCode = this.mainObjectCode;
         
         // Set initial editor content
-        this.editor.setValue(this.mainTemplate);
+        this.editor.setValue(this.mainObjectCode);
     }
     
     /**
@@ -120,17 +119,17 @@ class EditorPanel {
     }
     
     /**
-     * Preview the current template
+     * Preview the current object
      */
-    previewTemplate() {
+    previewObjectCode() {
         if (!this.objectManager) return;
         
         // Get current editor content
-        this.editorTemplate = this.editor.getValue();
+        this.editorObjectCode = this.editor.getValue();
         
         try {
-            // Set the template and create a new object
-            this.objectManager.setTemplate(this.editorTemplate);
+            // Set the object code and create a new object
+            this.objectManager.setObjectCode(this.editorObjectCode);
             this.objectManager.createObject();
             
             // Set preview mode
@@ -139,51 +138,51 @@ class EditorPanel {
             
             console.log('Preview mode activated');
         } catch (error) {
-            console.error('Error previewing template:', error);
-            alert('Error previewing template: ' + error.message);
+            console.error('Error previewing object:', error);
+            alert('Error previewing object: ' + error.message);
         }
     }
     
     /**
-     * Save the current template
+     * Save the current objhect code
      */
-    saveTemplate() {
+    saveObject() {
         if (!this.objectManager) return;
         
         // Get current editor content
-        this.editorTemplate = this.editor.getValue();
+        this.editorObjectCode = this.editor.getValue();
         
         try {
-            // Update the main template
-            this.mainTemplate = this.editorTemplate;
+            // Update the main object code
+            this.mainObjectCode = this.editorObjectCode;
             
-            // Set the template and create a new object
-            this.objectManager.setTemplate(this.mainTemplate);
+            // Set the object code and create a new object
+            this.objectManager.setObjectCode(this.mainObjectCode);
             this.objectManager.createObject();
             
             // Exit preview mode
             this.isPreviewMode = false;
             this.threeSection.classList.remove('preview-mode');
             
-            console.log('Template saved');
+            console.log('object saved');
         } catch (error) {
-            console.error('Error saving template:', error);
-            alert('Error saving template: ' + error.message);
+            console.error('Error saving object:', error);
+            alert('Error saving object: ' + error.message);
         }
     }
     
     /**
-     * Cancel changes and revert to main template
+     * Cancel changes and revert to main object
      */
     cancelChanges() {
         if (!this.objectManager) return;
         
         try {
-            // Reset editor content to main template
-            this.editor.setValue(this.mainTemplate);
+            // Reset editor content to main object
+            this.editor.setValue(this.mainObjectCode);
             
-            // Reset template and create a new object
-            this.objectManager.setTemplate(this.mainTemplate);
+            // Reset object code and create a new object
+            this.objectManager.setObjectCode(this.mainObjectCode);
             this.objectManager.createObject();
             
             // Exit preview mode

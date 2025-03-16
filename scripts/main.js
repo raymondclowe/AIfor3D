@@ -37,7 +37,7 @@ class Application {
         // TODO: Add event listeners for object manipulation commands
         
         console.log('Application initialized');
-        console.log('Object template:', this.objectManager.getTemplate());
+        console.log('Object code:', this.objectManager.getObjectCode());
     }
     
     /**
@@ -49,16 +49,12 @@ class Application {
         // TODO: Implement command processing
         // This will be expanded to handle various commands for 3D object manipulation
         
-        if (command.toLowerCase().includes('cube')) {
-            return 'Creating a cube...';
-        } else if (command.toLowerCase().includes('sphere')) {
-            return 'Creating a sphere...';
-        } else if (command.toLowerCase().includes('rotate')) {
+        if (command.toLowerCase().includes('rotate')) {
             return 'Rotating the object...';
         } else if (command.toLowerCase().includes('color')) {
             return 'Changing the color...';
         } else {
-            return 'Command not recognized. Try asking about the cube or sphere.';
+            return 'Command not recognized. Try asking about object manipulation.';
         }
     }
 }
