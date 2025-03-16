@@ -13,8 +13,22 @@ body, html {
 
 .container {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     height: 100%;
+    position: relative;
+}
+
+/* Adjust chat and 3D sections to take up the full height minus editor height when expanded */
+.chat-section, .three-section {
+    height: 100%;
+    transition: height 0.3s ease;
+}
+
+/* When editor is expanded, adjust main panels */
+.editor-section.expanded ~ .chat-section,
+.editor-section.expanded ~ .three-section {
+    height: calc(100% - 300px);
 }
 
 /* TODO: Add responsive design for mobile devices */

@@ -28,6 +28,25 @@ cube.rotation.z = 0;
 
 return cube;
 `;
+
+        // Example templates
+        this.templates = {
+            cube: this.objectTemplate,
+            sphere: `
+// Create a sphere
+const geometry = new THREE.SphereGeometry(1, 32, 32);
+const material = new THREE.MeshNormalMaterial();
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// Animation properties
+sphere.rotation.x = 0;
+sphere.rotation.y = 0;
+sphere.rotation.z = 0;
+
+return sphere;
+`
+        };
     }
     
     /**
@@ -65,6 +84,10 @@ return cube;
             
             // Execute the function with THREE and scene as parameters
             this.currentObject = createObjectFunction(THREE, this.scene);
+            
+            if (!this.currentObject) {
+                throw new Error('Template did not return an object');
+            }
             
             return this.currentObject;
         } catch (error) {
@@ -120,6 +143,15 @@ return cube;
                 z: this.currentObject.scale.z
             }
         };
+    }
+    
+    /**
+     * Get a template by name
+     * @param {string} name - Template name
+     * @returns {string} The template
+     */
+    getTemplateByName(name) {
+        return this.templates[name] || this.objectTemplate;
     }
 }
 

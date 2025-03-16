@@ -9,10 +9,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     
+    <!-- CodeMirror library for code editing -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    
     <!-- CSS files -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/three.css">
+    <link rel="stylesheet" href="styles/editor.css">
 </head>
 <body>
     <div class="container">
@@ -27,8 +34,25 @@
         </div>
         <div class="three-section" id="3d-container"></div>
     </div>
+    
+    <!-- Code Editor Panel (collapsed by default) -->
+    <div class="editor-section" id="editor-section">
+        <div class="editor-header">
+            <div class="editor-title">Advanced Editor</div>
+            <button class="editor-toggle" id="editor-toggle">Expand</button>
+        </div>
+        <div class="editor-content">
+            <div class="editor-container" id="code-editor"></div>
+            <div class="editor-actions">
+                <button class="editor-button preview-button" id="preview-button">Preview</button>
+                <button class="editor-button save-button" id="save-button">Save</button>
+                <button class="editor-button cancel-button" id="cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript modules -->
     <script type="module" src="scripts/main.js"></script>
+    <script type="module" src="scripts/editor.js"></script>
 </body>
 </html>
