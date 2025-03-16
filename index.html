@@ -8,6 +8,7 @@
     <!-- Three.js libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
     
     <!-- CodeMirror library for code editing -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -66,5 +67,14 @@
     <!-- JavaScript modules -->
     <script type="module" src="scripts/main.js"></script>
     <script type="module" src="scripts/editor.js"></script>
+    <script type="module">
+        import { initSTLExport } from './scripts/stlExporter.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize STL export after DOM is loaded
+            setTimeout(() => {
+                initSTLExport();
+            }, 1000); // Wait for app to initialize
+        });
+    </script>
 </body>
 </html>
