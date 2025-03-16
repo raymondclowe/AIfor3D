@@ -14,9 +14,9 @@
 
 // Dummy conversation for demonstration
 const dummyConversation = [
-    { sender: 'bot', text: "<i>This is a dummy chat, it doesn't really work</i><br><br>Hello! I'm your virtual assistant. How can I help you today?" },
+    { sender: 'bot', text: "This is a dummy chat, in a real chat it would be asking what you want to build?" },
     { sender: 'user', text: "Can you show me a 3D model?" },
-    { sender: 'bot', text: "Of course! You can see a 3D cube on the right. Feel free to rotate, zoom, and pan using your mouse." },
+    { sender: 'bot', text: "Of course! You can see a 3D scene on the right. Feel free to rotate, zoom, and pan using your mouse." },
     { sender: 'user', text: "How do I interact with it?" },
     { sender: 'bot', text: "Left-click and drag to rotate, right-click and drag to pan, and use the scroll wheel to zoom in and out." }
 ];
