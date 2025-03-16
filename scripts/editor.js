@@ -11,7 +11,6 @@ class EditorPanel {
     constructor() {
         // DOM elements
         this.editorSection = document.getElementById('editor-section');
-        this.editorToggle = document.getElementById('editor-toggle');
         this.editorContainer = document.getElementById('code-editor');
         this.previewButton = document.getElementById('preview-button');
         this.saveButton = document.getElementById('save-button');
@@ -19,7 +18,6 @@ class EditorPanel {
         this.threeSection = document.querySelector('.three-section');
         
         // State
-        this.isExpanded = false;
         this.isPreviewMode = false;
         
         // Object code versions
@@ -59,9 +57,6 @@ class EditorPanel {
      * Initialize event listeners
      */
     initEventListeners() {
-        // Toggle editor panel
-        this.editorToggle.addEventListener('click', () => this.togglePanel());
-        
         // Preview button
         this.previewButton.addEventListener('click', () => this.previewObjectCode());
         
@@ -85,37 +80,6 @@ class EditorPanel {
         
         // Set initial editor content
         this.editor.setValue(this.mainObjectCode);
-    }
-    
-    /**
-     * Toggle panel expansion/collapse
-     */
-    togglePanel() {
-        this.isExpanded = !this.isExpanded;
-        
-        if (this.isExpanded) {
-            this.editorSection.classList.add('expanded');
-            this.editorToggle.textContent = 'Collapse';
-            
-            // Make editor header visible even when collapsed
-            this.editorSection.style.height = '300px';
-            
-            // Update editor size after expansion
-            setTimeout(() => {
-                this.editor.refresh();
-            }, 300);
-        } else {
-            this.editorSection.classList.remove('expanded');
-            this.editorToggle.textContent = 'Expand';
-            
-            // Keep header visible when collapsed
-            this.editorSection.style.height = '40px';
-            
-            // Cancel any preview when collapsing
-            if (this.isPreviewMode) {
-                this.cancelChanges();
-            }
-        }
     }
     
     /**
@@ -202,9 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create editor panel
     window.editorPanel = new EditorPanel();
     
-    // Set initial height to show header
-    document.getElementById('editor-section').style.height = '40px';
-    
     // Wait for the application to initialize
     setTimeout(() => {
         // Get object manager reference from the application
@@ -213,6 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.error('Object manager not found');
         }
+        
+        // Refresh editor to ensure proper sizing
+        window.editorPanel.editor.refresh();
     }, 500);
 });
 

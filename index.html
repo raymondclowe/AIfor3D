@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="styles/chat.css">
     <link rel="stylesheet" href="styles/three.css">
     <link rel="stylesheet" href="styles/editor.css">
+    <link rel="stylesheet" href="styles/controls.css">
 </head>
 <body>
     <div class="container">
@@ -33,14 +34,25 @@
             </div>
         </div>
         <div class="three-section" id="3d-container"></div>
-    </div>
-    
-    <!-- Code Editor Panel (collapsed by default) -->
-    <div class="editor-section" id="editor-section">
-        <div class="editor-header">
-            <div class="editor-title">Advanced Editor</div>
-            <button class="editor-toggle" id="editor-toggle">Expand</button>
+        
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <div class="controls-header">
+                <div class="controls-title">Controls</div>
+            </div>
+            <div class="controls-content">
+                <!-- Control buttons will be added here -->
+                <button class="control-button" id="btn-export-stl">Export STL</button>
+                <button class="control-button" id="btn-settings">Settings</button>
+                
+            </div>
         </div>
+        
+        <!-- Code Editor Panel -->
+        <div class="editor-section" id="editor-section">
+            <div class="editor-header">
+                <div class="editor-title">Advanced Editor</div>
+            </div>
         <div class="editor-content">
             <div class="editor-container" id="code-editor"></div>
             <div class="editor-actions">
