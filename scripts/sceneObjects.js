@@ -17,7 +17,7 @@ const blockGeometry = new THREE.BoxGeometry(1, 2, 3);
 const blockMaterial = new THREE.MeshNormalMaterial();
 const block = new THREE.Mesh(blockGeometry, blockMaterial);
 block.position.x = 2;
-
+block.position.y = 1; // Adjust to sit on the zero plane
 // Add the block to the scene group
 scene.add(block);
 
@@ -26,12 +26,21 @@ const sphereGeometry = new THREE.SphereGeometry(1, 32, 32);
 const sphereMaterial = new THREE.MeshNormalMaterial();
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.x = -2;
-
+sphere.position.y = 1; // Adjust to sit on the zero plane
 // Add the sphere to the scene group
 scene.add(sphere);
 
+// Create a pyramid using cone geometry
+const pyramidGeometry = new THREE.ConeGeometry(1, 2, 4);
+const pyramidMaterial = new THREE.MeshNormalMaterial();
+const pyramid = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+pyramid.position.x = 0;
+pyramid.position.y = 1; // Adjust to sit on the zero plane
+// Add the pyramid to the scene group
+scene.add(pyramid);
+
 // Return array of objects (optional)
-return [block, sphere];
+return [block, sphere, pyramid];
 `;
 
 

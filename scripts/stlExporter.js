@@ -4,6 +4,37 @@
  */
 
 /**
+ * Calculate alignment transformation based on camera orientation
+ * @param {THREE.Camera} camera - The scene camera
+ * @returns {THREE.Matrix4} - Transformation matrix to align with grid
+ */
+function calculateAlignmentTransform(camera) {
+    if (!camera) {
+        console.warn('No camera found, using identity matrix');
+        return new THREE.Matrix4().identity();
+    }
+    
+    // Create target orientation aligned with grid
+    const targetUp = new THREE.Vector3(0, 1, 0);
+    const targetForward = new THREE.Vector3(0, 0, -1);
+    
+    // Get current camera orientation
+    const cameraForward = new THREE.Vector3();
+    camera.getWorldDirection(cameraForward);
+    const cameraUp = camera.up.clone();
+    
+    // Create quaternion to align camera orientation with target
+    const quaternion = new THREE.Quaternion();
+    quaternion.setFromUnitVectors(cameraForward, targetForward);
+    
+    // Create transformation matrix
+    const matrix = new THREE.Matrix4();
+    matrix.makeRotationFromQuaternion(quaternion);
+    
+    return matrix;
+}
+
+/**
  * Export object code as STL file
  * @param {string} objectCode - Three.js code as a string
  * @param {THREE.Group} [sceneGroup] - Optional scene group to export directly
@@ -21,10 +52,46 @@ export function exportSTL(objectCode, sceneGroup) {
         const exporter = new THREE.STLExporter();
         let stlData;
         
-        // If sceneGroup is provided, use it directly
+        // If sceneGroup is provided, clone it and apply alignment
         if (sceneGroup) {
-            // Generate STL string (ASCII format) from the scene group
-            stlData = exporter.parse(sceneGroup, { binary: false });
+            // Create a temporary scene with aligned objects
+            const tempScene = new THREE.Scene();
+            
+            // Get camera from scene manager or fallback to default
+            let camera = null;
+            if (window.app && window.app.sceneManager) {
+                // Try different camera access methods
+                if (typeof window.app.sceneManager.getCamera === 'function') {
+                    camera = window.app.sceneManager.getCamera();
+                } else if (window.app.sceneManager.camera) {
+                    camera = window.app.sceneManager.camera;
+                } else if (window.app.sceneManager.scene && 
+                         window.app.sceneManager.scene.camera) {
+                    camera = window.app.sceneManager.scene.camera;
+                }
+            }
+            
+            // Calculate alignment transformation
+            const alignmentMatrix = calculateAlignmentTransform(camera);
+            
+            // Clone and transform each object
+            sceneGroup.traverse(child => {
+                if (child instanceof THREE.Mesh) {
+                    const cloned = child.clone();
+                    cloned.applyMatrix4(alignmentMatrix);
+                    cloned.rotation.set(0, 0, 0);
+                    tempScene.add(cloned);
+                }
+            });
+            
+            // Generate STL string (ASCII format) from the transformed scene
+            stlData = exporter.parse(tempScene, { binary: false });
+            
+            // Debug log the transformation matrix
+            console.log('Applied alignment matrix:', alignmentMatrix);
+            
+            // Clean up (remove references to help garbage collection)
+            tempScene.clear();
         } else {
             // Create a temporary scene
             const tempScene = new THREE.Scene();
